@@ -48,30 +48,6 @@ app.use('/api/votes', voteRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/debug', debugRoutes);
 
-// Serve static files from React build in production
-if (process.env.NODE_ENV === 'production') {
-  const path = require('path');
-  
-  // Log the paths for debugging
-  console.log('Current directory:', __dirname);
-  console.log('Looking for client build at:', path.join(__dirname, '../client/build'));
-  
-  // Serve static files from client build
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  
-  // Handle React routing - send all non-API requests to React app
-  app.get('*', (req, res) => {
-    const indexPath = path.join(__dirname, '../client/build/index.html');
-    console.log('Serving index.html from:', indexPath);
-    res.sendFile(indexPath);
-  });
-} else {
-  // Development mode - just show a message for non-API routes
-  app.get('*', (req, res) => {
-    res.json({ message: 'API server running. Frontend should be served separately in development.' });
-  });
-}
-
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -85,6 +61,14 @@ app.get('/api/health', (req, res) => {
 // Simple test endpoint
 app.get('/test', (req, res) => {
   res.json({ message: 'Server is working!' });
+});
+
+// API-only mode - don't serve static files
+app.get('*', (req, res) => {
+  res.status(404).json({ 
+    message: 'API endpoint not found',
+    availableEndpoints: ['/api/auth', '/api/elections', '/api/votes', '/api/admin', '/api/health', '/test']
+  });
 });
 
 // Error handling middleware
