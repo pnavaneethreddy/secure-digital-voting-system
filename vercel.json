@@ -9,7 +9,7 @@
       }
     },
     {
-      "src": "server/package.json",
+      "src": "server/index.js",
       "use": "@vercel/node"
     }
   ],
@@ -22,5 +22,8 @@
       "src": "/(.*)",
       "dest": "client/build/index.html"
     }
-  ]
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
