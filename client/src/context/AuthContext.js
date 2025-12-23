@@ -1,6 +1,11 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 
+// Configure axios base URL for production
+if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_API_URL) {
+  axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+}
+
 const AuthContext = createContext();
 
 const initialState = {
