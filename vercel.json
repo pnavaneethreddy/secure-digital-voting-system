@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build",
-  "outputDirectory": "client/build",
   "builds": [
     {
-      "src": "server/index.js",
+      "src": "package.json",
       "use": "@vercel/node"
     }
   ],
@@ -17,8 +15,5 @@
       "src": "/(.*)",
       "dest": "client/build/index.html"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
