@@ -52,26 +52,54 @@ app.use('/api/debug', debugRoutes);
 if (process.env.NODE_ENV === 'production') {
   const path = require('path');
   
+  // Log the paths for debugging
+  console.log('Current directory:', __dirname);
+  console.log('Looking for client build at:', path.join(__dirname, '../client/build'));
+  
   // Serve static files from client build
   app.use(express.static(path.join(__dirname, '../client/build')));
   
   // Handle React routing - send all non-API requests to React app
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    const indexPath = path.join(__dirname, '../client/build/index.html');
+    console.log('Serving index.html from:', indexPath);
+    res.sendFile(indexPath);
+  });
+} else {
+  // Development mode - just show a message for non-API routes
+  app.get('*', (req, res) => {
+    res.json({ message: 'API server running. Frontend should be served separately in development.' });
   });
 }
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
+
+// Simple test endpoint
+app.get('/test', (req, res) => {
+  res.json({ message: 'Server is working!' });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Server error:', err.stack);
+  console.error('Error details:', {
+    message: err.message,
+    name: err.name,
+    stack: err.stack
+  });
+  
   res.status(500).json({ 
     message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+    error: process.env.NODE_ENV === 'development' ? err.message : err.message,
+    details: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
 });
 
