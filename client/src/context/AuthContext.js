@@ -92,14 +92,14 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔐 Frontend: Attempting login for:', email);
       
-      const res = await axios.post('/api/auth/login', { email, password });
+      const res = await axios.post('/.netlify/functions/login', { email, password });
       
       console.log('✅ Frontend: Login successful');
       dispatch({
         type: 'LOGIN_SUCCESS',
         payload: {
           user: res.data.user,
-          token: res.data.accessToken  // Use accessToken from response
+          token: res.data.token  // Use token from response
         }
       });
       return { success: true };
