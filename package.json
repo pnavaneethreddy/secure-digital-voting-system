@@ -1,7 +1,7 @@
 {
   "name": "secure-voting-system",
   "version": "1.0.0",
-  "description": "Secure Digital Voting System for University/Organization Elections",
+  "description": "Secure Digital Voting System for University/Organization Elections - Updated",
   "main": "server/index.js",
   "scripts": {
     "setup": "node setup.js",
